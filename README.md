@@ -3,7 +3,7 @@ This Todo application is built using Django and Django Rest Framework. It provid
 To install and run this application, you can follow these steps:
 
 1. Clone the repository: 
-  ```git clone https://github.com/your-username/your-repository.git```
+  ```git clone https://github.com/t7spotter/ToDo-App.git```
 
 3. Navigate to the project directory and activate the virtual environment (if necessary).
 
