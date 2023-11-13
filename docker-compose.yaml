@@ -15,7 +15,7 @@ services:
       - "5432:5432"
 
   web:
-    container_name: lib
+    container_name: todo
     build:
       context: .
       dockerfile: ./Dockerfile
