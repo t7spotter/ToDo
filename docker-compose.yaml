@@ -1,0 +1,36 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: "todo_postgres"
+    restart: always
+    image: postgres:14.4
+    environment:
+      POSTGRES_USER: "todo_postgres"
+      POSTGRES_PASSWORD: "todo_postgres"
+      POSTGRES_DB: "todo_postgres"
+    volumes:
+      - todo_postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    container_name: lib
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    environment:
+      BACKEND_POSTGRES_HOST: "db"
+      BACKEND_POSTGRES_PORT: "5432"
+    command:  bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  todo_postgres_data:
+    external: true
