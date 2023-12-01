@@ -1,19 +1,6 @@
 version: '3.3'
 
 services:
-  db:
-    container_name: "todo_postgres"
-    restart: always
-    image: postgres:14.4
-    environment:
-      POSTGRES_USER: "todo_postgres"
-      POSTGRES_PASSWORD: "todo_postgres"
-      POSTGRES_DB: "todo_postgres"
-    volumes:
-      - todo_postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
   web:
     container_name: todo
     build:
@@ -22,15 +9,36 @@ services:
     restart: always
     environment:
       BACKEND_POSTGRES_HOST: "db"
-      BACKEND_POSTGRES_PORT: "5432"
-    command:  bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      BACKEND_POSTGRES_NAME: "postgres"
+      BACKEND_POSTGRES_USERNAME: "todo_postgres"
+      BACKEND_POSTGRES_PASSWORD: "todo_postgres"
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
       - "8000:8000"
     depends_on:
       - db
+    networks:
+      - todo-network
+  
+  db:
+    container_name: todo_postgres
+    restart: always
+    image: postgres:14.4
+    environment:
+      POSTGRES_USER: "todo_postgres"
+      POSTGRES_PASSWORD: "todo_postgres"
+      POSTGRES_DB: "todo_postgres"
+    volumes:
+      - todo_postgres_data:/var/lib/postgresql/data
+    networks:
+      - todo-network
 
 volumes:
   todo_postgres_data:
     external: true
+
+networks:
+  todo-network:
+    driver: bridge
